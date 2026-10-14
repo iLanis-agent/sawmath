@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saw math - calculators</title>
+<style>
+  :root { --accent: #c05a10; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f4f6f8; color: #24282c; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 14px; max-width: 640px; }
+  .note { background: #fff; border: 1px solid #d8dfe6; border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 0.9rem; margin: 0 0 28px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #d8dfe6; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #727e88; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input, select { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #b3bfc9; border-radius: 5px; font-family: inherit; background: #fff; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.08); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #98a2ab; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Saw math</h1>
+  <p class="lede">The jug names the ratio, the link names the file, and the bar names the log. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="note">Illustrative planning arithmetic only. Ratios, file sizes and bar reach are labeled norms; the saw's manual and the chain's stamp govern. Chainsaws cut people as fast as wood: chaps, helmet, eye and ear protection, both hands, nothing above shoulder height. Felling trees is a course, not a calculator.</div>
+  <div class="grid">
+    <section>
+      <h2>Mix plan</h2>
+      <p class="hint">The jug names the ratio.</p>
+      <label for="m-g">Gas (gallons)</label>
+      <input id="m-g" type="number" value="1" min="0" step="0.5">
+      <label for="m-r">Ratio (to 1)</label>
+      <input id="m-r" type="number" value="50" min="0" step="5">
+      <button id="m-go">Pour the oil</button>
+      <div class="out" id="m-out"></div>
+    </section>
+    <section>
+      <h2>File plan</h2>
+      <p class="hint">The link names the file.</p>
+      <label for="f-p">Chain pitch</label>
+      <select id="f-p"><option value="1/4">1/4</option><option value=".325" selected>.325</option><option value="3/8">3/8</option><option value=".404">.404</option></select>
+      <button id="f-go">Fit the file</button>
+      <div class="out" id="f-out"></div>
+    </section>
+    <section>
+      <h2>Log plan</h2>
+      <p class="hint">The bar names the log.</p>
+      <label for="l-b">Bar length (in)</label>
+      <input id="l-b" type="number" value="16" min="0" step="1">
+      <label for="l-l">Log diameter (in)</label>
+      <input id="l-l" type="number" value="12" min="0" step="1">
+      <button id="l-go">Reach the log</button>
+      <div class="out" id="l-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/sawmath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('m-go').addEventListener('click', function(){
+  var a=[num('m-g'),num('m-r')];
+  show('m-out', SawMath.mixPlan.apply(null,a), function(r){ return SawMath.renderMix.apply(null,[r].concat(a)); });
+});
+document.getElementById('f-go').addEventListener('click', function(){
+  var a=[document.getElementById('f-p').value];
+  show('f-out', SawMath.filePlan.apply(null,a), function(r){ return SawMath.renderFile.apply(null,[r].concat(a)); });
+});
+document.getElementById('l-go').addEventListener('click', function(){
+  var a=[num('l-b'),num('l-l')];
+  show('l-out', SawMath.logPlan.apply(null,a), function(r){ return SawMath.renderLog.apply(null,[r].concat(a)); });
+});
+</script>
+</body>
+</html>
